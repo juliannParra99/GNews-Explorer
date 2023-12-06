@@ -1,23 +1,40 @@
-const apikey: string = '6883c7a1ce3f1d23af9e2df10716dd51';
-const url: string = `https://gnews.io/api/v4/search?q=example&lang=en&country=us&max=10&apikey=${apikey}`;
+import axios from "axios";
+import api_key from "./apiKey"
 
-fetch(url)
-  .then((response: Response) => {
-    return response.json();
-  })
-  .then((data: { articles: { title: string; description: string }[] }) => {
-    const articles = data.articles;
+export interface Article {
+  title: string;
+  description: string;
+  content: string;
+  url: string;
+  image: string;
+  publishedAt: string;
+  source: {
+    name: string;
+    url: string;
+  };
+}
 
-    for (let i = 0; i < articles.length; i++) {
-      // articles[i].title
-      console.log("Title: " + articles[i].title);
-      // articles[i].description
-      console.log("Description: " + articles[i].description);
-      // You can replace {property} below with any of the article properties returned by the API.
-      // articles[i].{property}
-      // console.log(articles[i]['{property}']);
+// Checking if the API key exists, throwing an error if it's missing
+if (!api_key) {
+  throw new Error('API_KEY not found in environment variables');
+}
 
-      // Delete this line to display all the articles returned by the request. Currently only the first article is displayed.
-      break;
-    }
-  });
+// Creating the URL using the API key
+const url: string = `https://gnews.io/api/v4/search?q=example&lang=en&country=us&max=10&apikey=${api_key}`;
+
+// Function to fetch news articles
+export const fetchNews = async (): Promise<Article[]> => {
+  try {
+    // se van a almacenar en articles, que es un objeto de arrays de tipo Article
+    const response = await axios.get<{ articles: Article[] }>(url);
+
+    // Returning array with data
+    return response.data.articles;
+  } catch (error) {
+    console.error('Error fetching news:', error);
+    
+    // Returning an empty array in case of an error
+    return [];
+  }
+};
+
