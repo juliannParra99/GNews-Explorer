@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { fetchNews, Article } from '../api'; // Ruta al archivo NewsService
 
 const NewsComponent: React.FC = () => {
+  // Article[]': Es un tipo genérico que especifica el tipo de datos que se almacenarán en 'articles'. 
+  // En este caso, se espera un array de objetos del tipo 'Article'. 
   const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
@@ -13,7 +15,7 @@ const NewsComponent: React.FC = () => {
         console.error('Error al obtener las noticias:', error);
       }
     };
-
+    //trae las noticias obtenidas de feth news
     obtenerNoticias();
   }, []);
 
